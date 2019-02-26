@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+  <h1>My Book List</h1>
+  <p><a href="/">Home</a></p>
+  <ul>
+    <% searchesResults.forEach(item => { %>
+    <li> <%= item.title %></li>
+    <% }) %>
+  </ul>
+
+</body>
+
+</html>
