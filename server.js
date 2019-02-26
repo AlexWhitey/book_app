@@ -30,7 +30,7 @@ app.use(express.static('./public'));
 // Routes
 app.get('/', newSearch);
 app.post('/searches', createSearch);
-
+app.get('/error', handleError);
 
 app.get('*', (request, response) => response.status(404).send('This route does not exist'));
 
@@ -53,10 +53,10 @@ function Book(info) {
 // Helper functions
 //********************
 
-// function handleError(err, response) {
-//   console.error(err);
-//   if(response) response.status(500).send('Piss Off')
-// }
+function handleError(error, response) {
+  response.render('pages/error');
+  app.use(express.static('./public'));
+}
 
 function newSearch(request, response) {
   response.render('pages/index');
@@ -65,19 +65,15 @@ function newSearch(request, response) {
 
 function createSearch(request, response) {
   let url = 'https://www.googleapis.com/books/v1/volumes?q=';
-
-  console.log(request.body);
-  console.log(request.body.search);
-
+  // console.log(request.body);
+  // console.log(request.body.search);
   if(request.body.search[1] === 'title') { url += `+intitle:${request.body.search[0]}`; }
   if(request.body.search[1] === 'author') { url += `+inauthor:${request.body.search[0]}`; }
-
-  console.log(url);
-
+  // console.log(url);
   superagent.get(url)
     .then(apiResponse => apiResponse.body.items.map(bookResult => new Book(bookResult.volumeInfo)))
-    .then(results => response.render('pages/searches/show', { searchesResults: results}));
+    .then(results => response.render('pages/searches/show', { searchesResults: results}))
 
-    // .catch(error => handleError(error, response));
+    .catch(error => handleError(error, response));
 }
 
