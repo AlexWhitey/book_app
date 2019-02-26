@@ -19,12 +19,15 @@ app.use(cors());
 // client.connect();
 // client.on('error', err => console.error(err));
 
+// Application Middleware
+app.use(express.urlencoded({ extended: true }));
+
 // Set the view engine for templating
 app.set('view engine', 'ejs');
-
+app.use(express.static('./public'));
 
 // Routes
-app.get('/hello', (request, response) => {
+app.get('/', (request, response) => {
   response.render('pages/index.ejs');
 });
 
