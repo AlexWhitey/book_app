@@ -27,13 +27,16 @@ app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 
 // Routes
-app.get('/', (request, response) => {
-  response.render('pages/index.ejs');
-});
-
+app.get('/', newSearch);
 
 
 app.get('*', (request, response) => response.status(404).send('This route does not exist'));
 
 // Listening for requests
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+
+function newSearch(request, response) {
+  response.render('pages/index')
+}
+
