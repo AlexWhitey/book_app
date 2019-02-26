@@ -1,10 +1,12 @@
 # book_app
 
-Number and name of feature: 
+Authors: Ian Gifford & Alex White
 
-Estimate of time needed to complete: 
+Number and name of feature: EJS
 
-Start time: 
+Estimate of time needed to complete: 5 hours
+
+Start time: 0915
 
 Finish time: 
 
