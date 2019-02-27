@@ -16,9 +16,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 
 // Database Setup
-// const client = new pg.Client(process.env.DATABASE_URL);
-// client.connect();
-// client.on('error', err => console.error(err));
+const client = new pg.Client(process.env.DATABASE_URL);
+client.connect();
+client.on('error', err => console.error(err));
 
 // Application Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -28,7 +28,9 @@ app.use(express.static('./public'));
 app.set('view engine', 'ejs');
 
 // Routes
-app.get('/', newSearch);
+app.get('/', savedBooks);
+app.get('/new', showSearch);
+app.post('/new', addBook);
 app.post('/searches', createSearch);
 
 app.get('*', (request, response) => response.status(404).send('This route does not exist'));
@@ -59,8 +61,25 @@ function handleError(error, response) {
   response.render('pages/error', {error: error});
 }
 
-function newSearch(request, response) {
-  response.render('pages/index');
+function savedBooks (request, response) {
+  let SQL = 'SELECT * FROM books;';
+  return client.query(SQL)
+  .then(results => response.render('index', {results: results.rows}))
+  .catch(handleError);
+}
+
+function addBook(request, response) {
+  console.log(request.body)
+  let {title, author, isbn, img_url, description, id} = request.body;
+  let SQL = 'INSERT INTO books(title, author, isbn, img_url, description, id) VALUES ($1, $2, $3, $4, $5, $6);';
+  let values = [title, author, isbn, img_url, description, id];
+  return client.query(SQL, values)
+  .then(response.redirect('/'))
+  .catch(error => handleError(error, response));
+}
+
+function showSearch(request, response) {
+  response.render('pages/searches/new');
   app.use(express.static('./public'));
 }
 
@@ -77,4 +96,5 @@ function createSearch(request, response) {
     .catch(error => handleError(error, response));
 }
 
-function createSearch
+// function getBookies (request, response) {
+// }

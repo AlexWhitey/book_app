@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Book App</title>
+  <link rel='stylesheet' type="text/css" a href="/styles/reset.css">
+  <link rel='stylesheet' type="text/css" a href="/styles/base.css">
+  <link rel='stylesheet' type="text/css" a href='styles/layout.css'>
+  <!-- <link rel='stylesheet' type="text/css" a href='styles/modules.css'>
+  <link rel='stylesheet' type="text/css" a href='styles/icons.css'> -->
+</head>
+
+<body>
+  <main>
+    <div class="search-form">
+    <h1>Search by Title or Author</h1>
+    <form action="/searches" method="post">
+    <input type="text" name="search" placeholder="Enter a Title or Author" required>
+    <fieldset>
+      <label for="title">
+        <span>Title</span>
+        <input type="radio" name="search" value="title" required>
+      </label>
+    </fieldset>
+    <fieldset>
+      <label for="author">
+        <span>Author</span>
+        <input type="radio" name="search" value="author" required>
+      </label>
+    </fieldset>
+    <button type="submit">Search the Googs</button>
+    </form>
+    </div>
+  </main>
+ 
+</body>
+
+</html>
