@@ -1,6 +1,7 @@
 # book_app
 **Version**: 1.0.1 (increment the patch/fix version number if you make more commits past your first submission)
 
+**Date** 20190226
 **Author**: Ian Gifford & Alex White
 
 Number and name of feature: EJS
@@ -9,10 +10,24 @@ Estimate of time needed to complete: 5 hours
 
 Start time: 0915
 
+Finish time: 1300
+
+Actual time needed to complete: 4 hours
+
+**Version**: 1.0.1
+
+**Date** 20190227
+**Author**: Ian Gifford & Alex White
+
+Number and name of feature: **User Acceptance**
+
+Estimate of time needed to complete: 5 hours
+
+Start time: 0915
+
 Finish time: 
 
-Actual time needed to complete: 
-
+Actual time needed to complete:
 
 ## Overview
 We want to create an application for users to search for books corresponding to Author or Title.
@@ -60,3 +75,4 @@ Use this area to document the iterative changes made to your application as each
 
 
  Give credit (and a link) to other people or resources that helped you build this application.
+

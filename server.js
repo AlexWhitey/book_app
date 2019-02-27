@@ -22,15 +22,14 @@ app.use(cors());
 
 // Application Middleware
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('./public'));
 
 // Set the view engine for templating
 app.set('view engine', 'ejs');
-app.use(express.static('./public'));
 
 // Routes
 app.get('/', newSearch);
 app.post('/searches', createSearch);
-app.get('/error', handleError);
 
 app.get('*', (request, response) => response.status(404).send('This route does not exist'));
 
@@ -42,11 +41,14 @@ app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 //********************
 
 function Book(info) {
-  this.title = info.title || 'No Title available'
-  this.author = info.authors || 'No author available'
-  // this.isbn = info.industryIdentifier[0].identifier || 'No isbn available'
-  this.image_url = info.imageLinks || 'No image.url available'
-  this.description = info.description || 'No description available'
+  const placeholderImage = 'https://i.imgur.com/J%LVHEL.jpg';
+
+  this.title = info.title ? info.title : 'No Title available'
+  this.author = info.authors ? info.authors[0] : 'No author available'
+  this.isbn = info.industryIdentifiers ? `ISBN_13 ${info.industryIdentifiers[0].identifier}` : 'No isbn available'
+  this.img_url = info.imageLinks ? info.imageLinks.smallThumbnail : placeholderImage;
+  this.description = info.description ? info.description : 'No Description Available';
+  this.id = info.industryIdentifiers ? `${info.industryIdentifiers[0].identifier}` : ''
 }
 
 //********************
@@ -54,8 +56,7 @@ function Book(info) {
 //********************
 
 function handleError(error, response) {
-  response.render('pages/error');
-  app.use(express.static('./public'));
+  response.render('pages/error', {error: error});
 }
 
 function newSearch(request, response) {
@@ -73,7 +74,6 @@ function createSearch(request, response) {
   superagent.get(url)
     .then(apiResponse => apiResponse.body.items.map(bookResult => new Book(bookResult.volumeInfo)))
     .then(results => response.render('pages/searches/show', { searchesResults: results}))
-
     .catch(error => handleError(error, response));
 }
 
