@@ -1,4 +1,36 @@
-* {
-  background-color: red;
-  color: lightblue;
+body {
+  /* background-color */
+  width: 80%;
+  margin: auto;
 }
+
+main {
+  border: 2px grey solid;
+  margin: auto;
+  width: 80%;
+}
+
+h1 {
+  font-size: 26px;
+}
+
+.search-form {
+  text-align: center; 
+}
+
+.book{
+  margin: auto;
+}
+
+.book li{
+  text-align: center;
+  border: 3px grey solid;
+  padding: 5px;
+  margin: 10px;
+}
+
+.book img{
+  width: 25%;
+  height: 25%;
+}
+

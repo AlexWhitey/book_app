@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 'use strict';
 
 // App Dependencies
@@ -21,23 +22,59 @@ app.use(cors());
 
 // Application Middleware
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('./public'));
 
 // Set the view engine for templating
 app.set('view engine', 'ejs');
-app.use(express.static('./public'));
 
 // Routes
 app.get('/', newSearch);
-
+app.post('/searches', createSearch);
 
 app.get('*', (request, response) => response.status(404).send('This route does not exist'));
 
 // Listening for requests
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
+//********************
+// Models
+//********************
+
+function Book(info) {
+  const placeholderImage = 'https://i.imgur.com/J%LVHEL.jpg';
+
+  this.title = info.title ? info.title : 'No Title available'
+  this.author = info.authors ? info.authors[0] : 'No author available'
+  this.isbn = info.industryIdentifiers ? `ISBN_13 ${info.industryIdentifiers[0].identifier}` : 'No isbn available'
+  this.img_url = info.imageLinks ? info.imageLinks.smallThumbnail : placeholderImage;
+  this.description = info.description ? info.description : 'No Description Available';
+  this.id = info.industryIdentifiers ? `${info.industryIdentifiers[0].identifier}` : ''
+}
+
+//********************
+// Helper functions
+//********************
+
+function handleError(error, response) {
+  response.render('pages/error', {error: error});
+}
 
 function newSearch(request, response) {
-  response.render('pages/index')
+  response.render('pages/index');
+  app.use(express.static('./public'));
+}
+
+function createSearch(request, response) {
+  let url = 'https://www.googleapis.com/books/v1/volumes?q=';
+  // console.log(request.body);
+  // console.log(request.body.search);
+  if(request.body.search[1] === 'title') { url += `+intitle:${request.body.search[0]}`; }
+  if(request.body.search[1] === 'author') { url += `+inauthor:${request.body.search[0]}`; }
+  // console.log(url);
+  superagent.get(url)
+    .then(apiResponse => apiResponse.body.items.map(bookResult => new Book(bookResult.volumeInfo)))
+    .then(results => response.render('pages/searches/show', { searchesResults: results}))
+    .catch(error => handleError(error, response));
 }
 
 function createSearch
