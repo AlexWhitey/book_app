@@ -40,3 +40,4 @@ function newSearch(request, response) {
   response.render('pages/index')
 }
 
+function createSearch
