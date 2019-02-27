@@ -77,3 +77,4 @@ function createSearch(request, response) {
     .catch(error => handleError(error, response));
 }
 
+function createSearch
