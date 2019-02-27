@@ -29,8 +29,8 @@ app.set('view engine', 'ejs');
 
 // Routes
 app.get('/', savedBooks);
+app.post('/', addBook);
 app.get('/new', showSearch);
-app.post('/new', addBook);
 app.post('/searches', createSearch);
 
 app.get('*', (request, response) => response.status(404).send('This route does not exist'));
@@ -64,12 +64,12 @@ function handleError(error, response) {
 function savedBooks (request, response) {
   let SQL = 'SELECT * FROM books;';
   return client.query(SQL)
-  .then(results => response.render('index', {results: results.rows}))
+  .then(results => response.render('./pages/index', {results: results.rows}))
   .catch(handleError);
 }
 
 function addBook(request, response) {
-  console.log(request.body)
+  console.log(request);
   let {title, author, isbn, img_url, description, id} = request.body;
   let SQL = 'INSERT INTO books(title, author, isbn, img_url, description, id) VALUES ($1, $2, $3, $4, $5, $6);';
   let values = [title, author, isbn, img_url, description, id];
@@ -95,6 +95,3 @@ function createSearch(request, response) {
     .then(results => response.render('pages/searches/show', { searchesResults: results}))
     .catch(error => handleError(error, response));
 }
-
-// function getBookies (request, response) {
-// }
