@@ -34,3 +34,10 @@ h1 {
   height: 25%;
 }
 
+.hidden-field {
+  display: none;
+}
+
+.hidden-form button {
+  display: block;
+}
