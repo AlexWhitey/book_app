@@ -5,6 +5,7 @@ const express = require('express');
 const superagent = require('superagent');
 const pg = require('pg');
 const cors = require('cors');
+const methodOverride = require('method-override');
 
 // Load environment variables from .env file
 require('dotenv').config();
@@ -21,7 +22,19 @@ client.on('error', err => console.error(err));
 
 // Application Middleware
 app.use(express.urlencoded({ extended: true }));
+
+// Specify a directory for statis resources
 app.use(express.static('./public'));
+
+// Midware to handle PUT and DELETE
+app.use(methodOverride((request, response) =>{
+  if (request.body && typeof request.body === 'object' && '_method' in request.body){
+    // Look in urlendcoded POST bodies and delete it
+    let method = request.body._method;
+    delete request.body._method;
+    return method;
+  }
+}))
 
 // Set the view engine for templating
 app.set('view engine', 'ejs');
