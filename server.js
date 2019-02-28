@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 'use strict';
 
 // App Dependencies
@@ -50,48 +49,45 @@ function Book(info) {
   this.isbn = info.industryIdentifiers ? `ISBN_13 ${info.industryIdentifiers[0].identifier}` : 'No isbn available'
   this.img_url = info.imageLinks ? info.imageLinks.smallThumbnail : placeholderImage;
   this.description = info.description ? info.description : 'No Description Available';
-  this.id = info.industryIdentifiers ? `${info.industryIdentifiers[0].identifier}` : ''
+  this.identifier = info.industryIdentifiers ? `${info.industryIdentifiers[0].identifier}` : ''
 }
 
 //********************
 // Helper functions
 //********************
 
-function handleError(error, response) {
-  response.render('pages/error', {error: error});
-}
-
-function savedBooks (request, response) {
-  let SQL = 'SELECT * FROM books;';
-  return client.query(SQL)
-  .then(results => response.render('./pages/index', {results: results.rows}))
-  .catch(handleError);
-}
-
-function addBook(request, response) {
-  console.log(request);
-  let {title, author, isbn, img_url, description, id} = request.body;
-  let SQL = 'INSERT INTO books(title, author, isbn, img_url, description, id) VALUES ($1, $2, $3, $4, $5, $6);';
-  let values = [title, author, isbn, img_url, description, id];
-  return client.query(SQL, values)
-  .then(response.redirect('/'))
-  .catch(error => handleError(error, response));
-}
-
 function showSearch(request, response) {
   response.render('pages/searches/new');
   app.use(express.static('./public'));
 }
 
+function savedBooks (request, response) {
+  let SQL = 'SELECT * FROM books;';
+  return client.query(SQL)
+    .then(results => response.render('./pages/index', {results: results.rows}))
+    .catch(handleError);
+}
+
+function addBook(request, response) {
+  console.log(request.body);
+  let {title, author, isbn, img_url, description, identifier} = request.body;
+  let SQL = 'INSERT INTO books(title, author, isbn, img_url, description, identifier) VALUES ($1, $2, $3, $4, $5, $6);';
+  let values = [title, author, isbn, img_url, description, identifier];
+  return client.query(SQL, values)
+    .then(response.redirect('/'))
+    .catch(error => handleError(error, response));
+}
+
 function createSearch(request, response) {
   let url = 'https://www.googleapis.com/books/v1/volumes?q=';
-  // console.log(request.body);
-  // console.log(request.body.search);
   if(request.body.search[1] === 'title') { url += `+intitle:${request.body.search[0]}`; }
   if(request.body.search[1] === 'author') { url += `+inauthor:${request.body.search[0]}`; }
-  // console.log(url);
   superagent.get(url)
     .then(apiResponse => apiResponse.body.items.map(bookResult => new Book(bookResult.volumeInfo)))
     .then(results => response.render('pages/searches/show', { searchesResults: results}))
     .catch(error => handleError(error, response));
+}
+
+function handleError(error, response) {
+  response.render('pages/error', {error: error});
 }
