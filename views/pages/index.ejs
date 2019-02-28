@@ -1,31 +1,24 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <title>Book App</title>
-  <link rel='stylesheet' type="text/css" a href="/styles/reset.css">
-  <link rel='stylesheet' type="text/css" a href="/styles/base.css">
-  <link rel='stylesheet' type="text/css" a href='styles/layout.css'>
-  <!-- <link rel='stylesheet' type="text/css" a href='styles/modules.css'>
-  <link rel='stylesheet' type="text/css" a href='styles/icons.css'> -->
+    <%- include('./../layout/head') %>
 </head>
-
 <body>
   <main>
-    <h1>Home Page</h1>
-    <p><a href="/new">Search API</a></p>
-    <ul>
+      <%- include('./../layout/header') %>
+      <section>
+    <ul id="book-list">
         <% results.forEach(book => { %>
-          <li>
-              <h3><%= book.title %></h3>
-              <div><img src=" <%= console.log(book.img_url) %> " alt="<%= book.title %>"></div>
+          <li id="book-item" data-id=" <%= book.id %>">
+              <h3> <%= book.title %> </h3>
+              <img src=" <%= book.img_url %> " alt="<%= book.title %>">
               <h5><%= book.authors %></h5>
-            <a href="/books/<%= book.identifier %>" class="show-details" >Show Details</a>
+            <a href="/books/<%= book.id %>" >Show Details</a>
           </li>
         <% }); %>
       </ul>
+      </section>
   </main>
  
 </body>
-
 </html>
