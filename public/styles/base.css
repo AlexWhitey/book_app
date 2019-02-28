@@ -33,11 +33,3 @@ h1 {
   width: 25%;
   height: 25%;
 }
-
-.hidden-field {
-  display: none;
-}
-
-.hidden-form button {
-  display: block;
-}
