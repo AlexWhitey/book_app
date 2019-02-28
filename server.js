@@ -31,6 +31,7 @@ app.get('/', savedBooks);
 app.post('/', addBook);
 app.get('/new', showSearch);
 app.post('/searches', createSearch);
+app.get('/books/:book_id', getOneBookDetail);
 
 app.get('*', (request, response) => response.status(404).send('This route does not exist'));
 
@@ -49,12 +50,21 @@ function Book(info) {
   this.isbn = info.industryIdentifiers ? `ISBN_13 ${info.industryIdentifiers[0].identifier}` : 'No isbn available'
   this.img_url = info.imageLinks ? info.imageLinks.smallThumbnail : placeholderImage;
   this.description = info.description ? info.description : 'No Description Available';
-  this.identifier = info.industryIdentifiers ? `${info.industryIdentifiers[0].identifier}` : ''
 }
 
 //********************
 // Helper functions
 //********************
+
+function getOneBookDetail(request, response) {
+  let SQL = 'SELECT * FROM books WHERE id=$1;';
+  let values = [request.params.book_id];
+  return client.query(SQL, values)
+    .then(result => {
+      return response.render('pages/books/show', {book: result.rows[0]});
+    })
+    .catch(err => handleError(err, response));
+}
 
 function showSearch(request, response) {
   response.render('pages/searches/new');
@@ -64,15 +74,17 @@ function showSearch(request, response) {
 function savedBooks (request, response) {
   let SQL = 'SELECT * FROM books;';
   return client.query(SQL)
-    .then(results => response.render('./pages/index', {results: results.rows}))
+    .then(results => {
+      response.render('./pages/index', {results: results.rows})
+    })
     .catch(handleError);
 }
 
 function addBook(request, response) {
   console.log(request.body);
-  let {title, author, isbn, img_url, description, identifier} = request.body;
-  let SQL = 'INSERT INTO books(title, author, isbn, img_url, description, identifier) VALUES ($1, $2, $3, $4, $5, $6);';
-  let values = [title, author, isbn, img_url, description, identifier];
+  let {title, author, isbn, img_url, description} = request.body;
+  let SQL = 'INSERT INTO books(title, author, isbn, img_url, description) VALUES ($1, $2, $3, $4, $5);';
+  let values = [title, author, isbn, img_url, description];
   return client.query(SQL, values)
     .then(response.redirect('/'))
     .catch(error => handleError(error, response));
