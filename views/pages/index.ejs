@@ -14,6 +14,16 @@
   <main>
     <h1>Home Page</h1>
     <p><a href="/new">Search API</a></p>
+    <ul>
+        <% results.forEach(book => { %>
+          <li>
+              <h3><%= book.title %></h3>
+              <div><img src=" <%= console.log(book.img_url) %> " alt="<%= book.title %>"></div>
+              <h5><%= book.authors %></h5>
+            <a href="/books/<%= book.identifier %>" class="show-details" >Show Details</a>
+          </li>
+        <% }); %>
+      </ul>
   </main>
  
 </body>

@@ -21,27 +21,27 @@
         <fieldset class="hidden-field">
           <label for="title">
             <span>Title</span>
-            <input type="text" name="title" value="<% book.title %>" required>
+            <input type="text" name="title" value="<%= book.title %>" required>
           </label>
           <label for="author">
             <span>author</span>
-            <input type="text" name="author" value="<% book.author %>" required>
+            <input type="text" name="author" value="<%= book.author %>" required>
           </label>
           <label for="isbn">
             <span>isbn</span>
-            <input type="text" name="isbn" value="<% book.isbn %>" required>
+            <input type="text" name="isbn" value="<%= book.isbn %>" required>
           </label>
           <label for="img_url">
             <span>img_url</span>
-            <input type="text" name="img_url" value="<% book.img_url %>" required>
+            <input type="text" name="img_url" value="<%= book.img_url %>" required>
           </label>
           <label for="description">
             <span>description</span>
-            <input type="text" name="description" value="<% book.description %>" required>
+            <input type="text" name="description" value="<%= book.description %>" required>
           </label>
           <label for="id">
-            <span>id</span>
-            <input type="text" name="id" value="<% book.id %>" required>
+            <span>identifier</span>
+            <input type="text" name="identifier" value="<%= book.identifier %>" required>
           </label>
         </fieldset>
         <button type="submit">Save Book</button>
