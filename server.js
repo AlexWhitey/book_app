@@ -41,7 +41,7 @@ app.set('view engine', 'ejs');
 
 // Routes
 app.get('/', savedBooks);
-app.post('/', addBook);
+app.post('/addBook', addBook);
 app.get('/new', showSearch);
 app.post('/searches', createSearch);
 app.get('/books/:book_id', getOneBookDetail);
@@ -90,16 +90,18 @@ function savedBooks (request, response) {
     .then(results => {
       response.render('./pages/index', {results: results.rows})
     })
-    .catch(handleError);
+    .catch(error => handleError(error, response));
 }
 
 function addBook(request, response) {
   console.log(request.body);
-  let {title, author, isbn, img_url, description} = request.body;
+  let { title, author, isbn, img_url, description } = request.body;
+
   let SQL = 'INSERT INTO books(title, author, isbn, img_url, description) VALUES ($1, $2, $3, $4, $5);';
   let values = [title, author, isbn, img_url, description];
+  console.log('89', values);
   return client.query(SQL, values)
-    .then(response.redirect('/'))
+    .then(response.send('saved the book'))
     .catch(error => handleError(error, response));
 }
 

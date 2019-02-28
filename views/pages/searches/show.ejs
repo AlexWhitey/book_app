@@ -18,9 +18,7 @@
       <h2> <%= book.title %> </h2>
       <span> <%= book.author %> </span>
       <p> <%= book.description %> </p>
-
-      <button type="button" id="formButton">Save This Book!</button>
-      <form id="hidden-form" action="/" method="post">
+      <form class="hidden-form" action="/addBook" method="post">
         <fieldset class="hidden-field">
           <label for="title">
             <span>Title</span>
@@ -43,7 +41,7 @@
             <input type="text" name="description" value="<%= book.description %>" >
           </label>
         </fieldset>
-        
+        <button type="submit">Save Book</button>
       </form> 
     </li>
     <% }) %>
