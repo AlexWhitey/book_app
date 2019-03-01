@@ -4,7 +4,6 @@
 const express = require('express');
 const superagent = require('superagent');
 const pg = require('pg');
-const cors = require('cors');
 const methodOverride = require('method-override');
 
 // Load environment variables from .env file
@@ -13,7 +12,6 @@ require('dotenv').config();
 // Application Setup
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.use(cors());
 
 // Database Setup
 const client = new pg.Client(process.env.DATABASE_URL);
@@ -36,19 +34,26 @@ app.use(methodOverride((request, response) =>{
   }
 }))
 
+// Routes
 // Set the view engine for templating
 app.set('view engine', 'ejs');
 
-// Routes
 app.get('/', savedBooks);
+
 app.post('/addBook', addBook);
+
 app.get('/new', showSearch);
+
 app.post('/searches', createSearch);
+
 app.get('/books/:book_id', getOneBookDetail);
+
+app.post('/books/:book_id', updateBook);
+
+app.delete('/books/:book_id', deleteBook);
 
 app.get('*', (request, response) => response.status(404).send('This route does not exist'));
 
-// Listening for requests
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 //********************
@@ -94,14 +99,11 @@ function savedBooks (request, response) {
 }
 
 function addBook(request, response) {
-  console.log(request.body);
   let { title, author, isbn, img_url, description } = request.body;
-
   let SQL = 'INSERT INTO books(title, author, isbn, img_url, description) VALUES ($1, $2, $3, $4, $5);';
   let values = [title, author, isbn, img_url, description];
-  console.log('89', values);
   return client.query(SQL, values)
-    .then(response.send('saved the book'))
+    .then(response.redirect('/'))
     .catch(error => handleError(error, response));
 }
 
@@ -111,7 +113,29 @@ function createSearch(request, response) {
   if(request.body.search[1] === 'author') { url += `+inauthor:${request.body.search[0]}`; }
   superagent.get(url)
     .then(apiResponse => apiResponse.body.items.map(bookResult => new Book(bookResult.volumeInfo)))
+    .catch(error => handleError(error, response))
     .then(results => response.render('pages/searches/show', { searchesResults: results}))
+    .catch(error => handleError(error, response));
+}
+
+
+// Delete book function 
+function deleteBook(request, response) {
+  let SQL = `DELETE FROM books WHERE id=$1;`;
+  let values = [request.params.book_id]
+
+  return client.query(SQL, values)
+    .then(response.redirect('/'))
+    .catch(error => handleError(error, response));
+}
+// Update book function
+function updateBook(request, response) {
+  let { title, author, isbn, img_url, description } = request.body;
+  let SQL = 'UPDATE books SET title=$1, author=$2, isbn=$3, img_url=$4, description=$5;';
+  let values = [title, author, isbn, img_url, description];
+
+  return client.query(SQL, values)
+    .then(response.redirect('/'))
     .catch(error => handleError(error, response));
 }
 
