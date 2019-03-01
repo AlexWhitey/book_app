@@ -111,6 +111,7 @@ function createSearch(request, response) {
   let url = 'https://www.googleapis.com/books/v1/volumes?q=';
   if(request.body.search[1] === 'title') { url += `+intitle:${request.body.search[0]}`; }
   if(request.body.search[1] === 'author') { url += `+inauthor:${request.body.search[0]}`; }
+  console.log('114', url);
   superagent.get(url)
     .then(apiResponse => apiResponse.body.items.map(bookResult => new Book(bookResult.volumeInfo)))
     .catch(error => handleError(error, response))
@@ -118,8 +119,7 @@ function createSearch(request, response) {
     .catch(error => handleError(error, response));
 }
 
-
-// Delete book function 
+// Delete book function
 function deleteBook(request, response) {
   let SQL = `DELETE FROM books WHERE id=$1;`;
   let values = [request.params.book_id]
@@ -131,11 +131,11 @@ function deleteBook(request, response) {
 // Update book function
 function updateBook(request, response) {
   let { title, author, isbn, img_url, description } = request.body;
-  let SQL = 'UPDATE books SET title=$1, author=$2, isbn=$3, img_url=$4, description=$5;';
-  let values = [title, author, isbn, img_url, description];
+  let SQL = 'UPDATE books SET title=$1, author=$2, isbn=$3, img_url=$4, description=$5 WHERE id=$6;';
+  let values = [title, author, isbn, img_url, description, request.params.book_id];
 
   return client.query(SQL, values)
-    .then(response.redirect('/'))
+    .then(response.redirect(`/books/${request.params.book_id}`))
     .catch(error => handleError(error, response));
 }
 
