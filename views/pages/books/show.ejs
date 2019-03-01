@@ -8,7 +8,14 @@
     <main>
       <section>
         <%- include('./detail') %>
+        <button class="select-book">Edit This Book</button>
+          <%- include('../layout/form', {book: book, formAction: 'update'}) %>
+        <form action="/books/<%= book.id %>" method="post">
+          <input type="hidden" name="_method" value="delete">
+          <button type="submit" >Delete</button>
+        </form>
       </section>
     </main>
+    <script type="text/javascript" src=""></script>
   </body>
 </html>
