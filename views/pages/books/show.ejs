@@ -9,7 +9,7 @@
       <section>
         <%- include('./detail') %>
         <button class="select-book">Edit This Book</button>
-          <%- include('../layout/form', {book: book, formAction: 'update'}) %>
+          <%- include('./../../layout/form', {book: book, formAction: 'update'}) %>
         <form action="/books/<%= book.id %>" method="post">
           <input type="hidden" name="_method" value="delete">
           <button type="submit" >Delete</button>
